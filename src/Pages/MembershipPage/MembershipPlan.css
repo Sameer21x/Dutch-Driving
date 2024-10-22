@@ -1,0 +1,193 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+  }
+  
+  .membership-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .header-membership {
+    display: flex;
+    height: 70px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    color: white;
+    background-color: #233D4D;
+  }
+  
+  .logo {
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: white;
+}
+  
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .user-profile-membership {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+  }
+  
+  .main-content {
+    flex: 1;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .title {
+    font-size: 2rem;
+    color: #ff7a00;
+    margin-bottom: 2rem;
+  }
+  
+  .plans-container {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+  
+  .plan {
+    background-color: white;
+    border-radius: 10px;
+    padding: 2rem;
+    width: 330px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .plan.featured {
+    border: 2px solid #ff7a00;
+  }
+  
+  .plan-title {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .plan-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .plan-features {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 2rem;
+  }
+  
+  .plan-features li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .plan-features li::before {
+    content: "✓";
+    color: #ff7a00;
+    margin-right: 0.5rem;
+  }
+  
+  .buy-button {
+    background-color: #ff7a00;
+    width: 80%;
+    color: white;
+    border: none;
+    padding: 0.7rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .coaching-banner {
+    background-color: #ff7a00;
+    color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 4rem;
+    margin-bottom: 5rem;
+  }
+  
+  .coaching-banner h2 {
+    margin-bottom: 1rem;
+  }
+  
+  .start-learning-button {
+    width: 20%;
+    background-color: #233D4D;
+    color: white;
+    border: none;
+    padding: 1rem 1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    margin-top: 2rem;
+}
+  
+  .footer {
+    background-color: #233D4D;
+    color: white;
+    padding: 2rem;
+  }
+  
+  .footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .footer-logo {
+    font-weight: bold;
+  }
+  
+  .newsletter {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .email-input {
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: none;
+  }
+  
+  .subscribe-button {
+    background-color: #ff7a00;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .footer-links {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .footer-link {
+    color: white;
+    text-decoration: none;
+  }
+  
+  .copyright {
+    font-size: 0.8rem;
+  }

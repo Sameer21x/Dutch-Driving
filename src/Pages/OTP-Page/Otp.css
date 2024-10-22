@@ -1,0 +1,125 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+  }
+  
+  .otp-container {
+    display: flex;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  
+  .otp-content {
+    display: flex;
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .illustration-container {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .illustration-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f3f4f6;
+    border-radius: 10px;
+  }
+  
+  .illustration-foreground {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .otp-illustration {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .form-container {
+    flex: 1;
+    display: flex;
+    height: 600px;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px;
+  }
+  
+  .form-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 50px;
+  }
+  
+  .form-description {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 50px;
+  }
+  
+  .otp-input-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .otp-input {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    font-size: 24px;
+    border: 1px solid #d1d5db;
+    border-radius: 5px;
+  }
+  
+  .verify-button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    margin-top: 20px;
+    border-radius: 40px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #f97316;
+    color: white;
+    transition: background-color 0.3s;
+  }
+  
+  .verify-button:hover {
+    background-color: #ea580c;
+  }
+  
+  @media (max-width: 768px) {
+    .otp-content {
+      flex-direction: column;
+    }
+  
+    .illustration-container {
+      height: 200px;
+    }
+  
+    .form-container {
+      padding: 20px;
+    }
+  }

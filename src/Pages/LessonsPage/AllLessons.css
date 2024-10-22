@@ -1,0 +1,291 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+  }
+  
+  .user-profile {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .header {
+    background-color: #ff6636;
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .about-us {
+    cursor: pointer;
+  }
+  
+  .user-icon, .svg-icon {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+  
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+  }
+  
+  .main-content {
+    flex: 1;
+    padding: 0rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .hero {
+      background-color: #ff6636;
+      border-bottom-left-radius: 33%;
+      border-bottom-right-radius: 20%;
+      color: white;
+      width: 100%;
+      padding: 2rem;
+      /* border-radius: 10px; */
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+  }
+  
+  .hero-content {
+    max-width: 50%;
+  }
+  
+  .hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .hero p {
+    margin-bottom: 2rem;
+  }
+  
+  .cta-buttons {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .btn-primary {
+      background-color: #455A64;
+      width: 30%;
+      border-radius: 50px;
+      color: white;
+      display: flex;
+      justify-content: center;
+      font-size: 1.2rem;
+  }
+  
+  .btn-secondary {
+    background-color: transparent;
+    color: #ffffff;
+    border-radius: 40px;
+    border: 1px solid #ffffff;
+  }
+  
+  .hero-image img {
+      max-width: 100%;
+      height: auto;
+      display: flex;
+      transform: rotate(-1.1deg);
+      position: relative;
+      top: 31px;
+      right: 103px;
+  }
+    
+  
+  .welcome-message {
+      background-color: #1e3a5f;
+      width: 60%;
+      color: white;
+      padding: 2rem 2rem;
+      border-radius: 10px;
+      text-align: center;
+  }
+  
+  .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      margin-bottom: 25px;
+      width: 40%;
+  }
+  
+  .btn-large {
+      background-color: #ff6636;
+      display: flex;
+      justify-content: center;
+      color: white;
+      padding: 2.5rem;
+      font-size: 2rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  }
+  
+  .btn-large:hover {
+    background-color: #e55a2f;
+  }
+  
+  @media (max-width: 768px) {
+    .hero {
+      flex-direction: column;
+    }
+  
+    .hero-content {
+      max-width: 100%;
+      margin-bottom: 2rem;
+    }
+  }
+
+  .driving-lessons {
+    padding: 2rem;
+    text-align: center;
+}
+
+.driving-lessons h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.driving-lessons > p {
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+}
+
+.lessons-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.lesson-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.lesson-card:hover {
+    transform: translateY(-5px);
+}
+
+.lesson-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 1rem;
+}
+
+.lesson-card h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.lesson-card p {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+
+
+.footer {
+    background-color: #233D4D;
+    color: white;
+    padding: 2rem;
+  }
+  
+  .footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .footer-logo {
+    font-weight: bold;
+  }
+  
+  .newsletter {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .email-input {
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: none;
+  }
+  
+  .subscribe-button {
+    background-color: #ff7a00;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .footer-links {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .footer-link {
+    color: white;
+    text-decoration: none;
+  }
+  
+  .copyright {
+    font-size: 0.8rem;
+  }
+
+@media (max-width: 768px) {
+    .lessons-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .lessons-grid {
+        grid-template-columns: 1fr;
+    }
+}
