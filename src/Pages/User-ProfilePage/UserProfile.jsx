@@ -2,9 +2,20 @@ import React from 'react';
 import '../User-ProfilePage/UserProfile.css';
 import profilepic from '../../assets/imgs/profilepic.png'
 import car from '../../assets/imgs/driving-amico 2.png'
+import { useNavigate } from 'react-router-dom';
+import Loader from '../../Components/Loader';
+
 
 
 export default function UserProfile() {
+    const navigate = useNavigate();
+
+    const getlessons=()=>{
+        navigate("/alllessons")
+    }
+
+
+
     return (
         <div className="user-profile">
             <header className="header">
@@ -56,8 +67,8 @@ export default function UserProfile() {
                 </section>
 
                 <section className="action-buttons">
-                    <button className="btn btn-large">Learn Lessons</button>
-                    <button className="btn btn-large">Attempt Quiz</button>
+                    <button className="btn btn-large" onClick={getlessons}>Learn Lessons</button>
+                    <button className="btn btn-large" >Attempt Quiz</button>
                     <button className="btn btn-large">Check Results</button>
                 </section>
             </main>

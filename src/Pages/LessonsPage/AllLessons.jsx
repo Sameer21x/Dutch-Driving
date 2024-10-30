@@ -1,34 +1,48 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../LessonsPage/AllLessons.css';
-import profilepic from '../../assets/imgs/profilepic.png'
-import car from '../../assets/imgs/driving-amico 2.png'
+import profilepic from '../../assets/imgs/profilepic.png';
+import car from '../../assets/imgs/driving-amico 2.png';
+import axios from 'axios';
+import Loader from '../../Components/Loader';
+import { BaseUrl } from '../../Constants/Constant';
+import { useNavigate } from 'react-router-dom';
 
-// Import icons for lessons (you'll need to replace these with your actual icon imports)
-import icon1 from '../../assets/icons/icon1.png'
-import icon2 from '../../assets/icons/icon2.png'
-import icon3 from '../../assets/icons/icon3.png'
-import icon4 from '../../assets/icons/icon4.png'
-import icon5 from '../../assets/icons/icon5.png'
-import icon6 from '../../assets/icons/icon6.png'
-import icon7 from '../../assets/icons/icon7.png'
-import icon8 from '../../assets/icons/icon8.png'
-import icon9 from '../../assets/icons/icon9.png'
 
+import icon1 from '../../assets/icons/icon1.png';
+import icon2 from '../../assets/icons/icon2.png';
+import icon3 from '../../assets/icons/icon3.png';
+import icon4 from '../../assets/icons/icon4.png';
+import icon5 from '../../assets/icons/icon5.png';
+import icon6 from '../../assets/icons/icon6.png';
+import icon7 from '../../assets/icons/icon7.png';
+import icon8 from '../../assets/icons/icon8.png';
+import icon9 from '../../assets/icons/icon9.png';
 
 export default function AllLessons() {
+    const [lessons, setLessons] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
-    const lessons = [
-        { icon: icon1, number: 1, title: 'Hazard Perception' },
-        { icon: icon2, number: 2, title: 'Priority Situation' },
-        { icon: icon3, number: 3, title: 'Accidents and Breakdown' },
-        { icon: icon4, number: 4, title: 'Distance and Speed' },
-        { icon: icon5, number: 5, title: 'Traffic Officer' },
-        { icon: icon6, number: 6, title: 'Stopping and Parking' },
-        { icon: icon7, number: 7, title: 'Traffic Signs' },
-        { icon: icon8, number: 8, title: 'Motorway and Tunnels' },
-        { icon: icon9, number: 9, title: 'Eco-driving' },
-    ];
 
+    const selectlesson = (lessonId) => {
+        navigate("/Lessonqna", { state: { lessonId } });
+    };
+
+
+    // Fetch lessons from API
+    useEffect(() => {
+        axios.get(`${BaseUrl}/lessons`)
+            .then(response => {
+                setLessons(response.data.lessons);
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error("Error fetching lessons:", error);
+                setLoading(false);
+            });
+    }, []);
+
+    const icons = [icon1, icon2, icon3, icon4, icon5, icon6, icon7, icon8, icon9];
 
     return (
         <div className="user-profile">
@@ -49,49 +63,58 @@ export default function AllLessons() {
                             <polyline points="16 17 21 12 16 7"></polyline>
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                         </svg>
-
-
                     </div>
                 </div>
             </header>
 
             <main className="main-content">
-                <section className="hero">
-                    <div className="hero-content">
-                        <h1>Learn Driving Online,<br />Anytime, Anywhere Easily!</h1>
-                        <p>Dutch Driving is an interesting platform that will teach you in more an interactive way</p>
-                        <div className="cta-buttons">
-                            <button className="btn btn-primary">Contact Us</button>
-                            <button className="btn btn-secondary">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <polygon points="10 8 16 12 10 16 10 8"></polygon>
-                                </svg>
-                                Watch how it works
-                            </button>
-                        </div>
-                    </div>
-                    <div className="hero-image">
-                        <img src={car} alt="People driving" />
-                    </div>
-                </section>
-
-                <section className="driving-lessons">
-                    <h2>Driving Lessons</h2>
-                    <p>TOTC is one powerful online software suite that combines all the tools needed to run a successful school or office.</p>
-                    <div className="lessons-grid">
-                        {lessons.map((lesson, index) => (
-                            <div key={index} className="lesson-card">
-                                <img src={lesson.icon} alt={`Lesson ${lesson.number} icon`} className="lesson-icon" />
-                                <h3>Lesson {lesson.number}</h3>
-                                <p>{lesson.title}</p>
+                {loading ? (
+                    <Loader />
+                ) : (
+                    <>
+                        <section className="hero">
+                            <div className="hero-content">
+                                <h1>Learn Driving Online,<br />Anytime, Anywhere Easily!</h1>
+                                <p>Dutch Driving is an interesting platform that will teach you in a more interactive way</p>
+                                <div className="cta-buttons">
+                                    <button className="btn btn-primary">Contact Us</button>
+                                    <button className="btn btn-secondary">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                                        </svg>
+                                        Watch how it works
+                                    </button>
+                                </div>
                             </div>
-                        ))}
-                    </div>
-                </section>
+                            <div className="hero-image">
+                                <img src={car} alt="People driving" />
+                            </div>
+                        </section>
 
+                        <section className="driving-lessons">
+                            <h2>Driving Lessons</h2>
+                            <p>Dutch Driving offers a dynamic online platform featuring interactive driving lessons and quizzes, providing all the essential tools to help learners succeed in mastering road knowledge and driving skills.</p>
+                            <div className="lessons-grid">
+                                {lessons.map((lesson, index) => (
+                                    <div key={lesson._id} className="lesson-card" onClick={() => selectlesson(lesson._id)}>
+                                        <img src={icons[index % icons.length]} alt={`Lesson ${lesson.number} icon`} className="lesson-icon" />
+                                        {/* <h3>Lesson {lesson.number}</h3> */}
+                                        <h3>{lesson.title}</h3><br />
 
+                                        <p>Total Questions {lesson.noOfQuestions}</p><br />
+                                        <p>{lesson.description}</p>
+                                        
+
+                                    </div>
+                                ))}
+                            </div>
+
+                        </section>
+                    </>
+                )}
             </main>
+
             <footer className="footer">
                 <div className="footer-content">
                     <div className="footer-logo">Dutch Driving</div>
