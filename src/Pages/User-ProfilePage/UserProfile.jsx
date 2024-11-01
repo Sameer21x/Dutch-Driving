@@ -2,16 +2,28 @@ import React from 'react';
 import '../User-ProfilePage/UserProfile.css';
 import profilepic from '../../assets/imgs/profilepic.png'
 import car from '../../assets/imgs/driving-amico 2.png'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 import Loader from '../../Components/Loader';
+import { useUser } from '../../UserContext';
+
 
 
 
 export default function UserProfile() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const { userId } = useUser();
+
+  console.log('userId is here on profile page', userId);
+
+
+    // const { userId } = location.state || {};
+    // console.log(userId,"userId is here on profile page");
+    
+
 
     const getlessons=()=>{
-        navigate("/alllessons")
+        navigate("/alllessons",{state:{userId}})
     }
 
 

@@ -6,51 +6,66 @@ import Loader from '../../Components/Loader';
 import loginImage from '../../assets/imgs/driving-amico 1.png';
 import Swal from 'sweetalert2';
 import { BaseUrl } from '../../Constants/Constant';
+import { jwtDecode } from 'jwt-decode';
+import { useUser } from '../../UserContext';
+
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [emailAddress, setemailAddress] = useState('');
-  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-
-  const handlesignup = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      navigate('/signup');
-    }, 500); // Delay for smooth transition
-  };
+  const { login } = useUser();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
+    // Clear any existing token
+    localStorage.removeItem('token');
+
     try {
       const response = await axios.post(`${BaseUrl}/user/login`, {
-        emailAddress: emailAddress,
-        password
+        emailAddress,
+        password,
       });
 
       setLoading(false);
       const { message, token, otpRequired } = response.data;
+      console.log(response.data, "response is here");
 
-      // Show success alert and navigate based on otpRequired
       Swal.fire({
         icon: 'success',
         title: message,
       });
 
       if (otpRequired) {
-        // Navigate to OTP page if OTP is required
         navigate('/otp', { state: { emailAddress } });
       } else {
-        // Store token if needed, then navigate to user profile
+        // Save the token
         localStorage.setItem('token', token);
-        navigate('/userprofile');
+
+        const decodedToken = jwtDecode(token.replace("Bearer ", ""));
+        console.log(decodedToken, "decoded token are here");
+
+        const userId = decodedToken.userId || decodedToken._id;
+        const paymentActive = decodedToken.paymentActive;
+
+        // Use the login function from UserContext
+        login(userId);
+
+        console.log("User ID:", userId); // For debugging
+        console.log("Payment Active:", paymentActive); // For debugging
+
+        // Navigate based on paymentActive status
+        if (paymentActive) {
+          navigate('/userprofile');
+        } else {
+          navigate('/membershipplan');
+        }
       }
     } catch (err) {
       setLoading(false);
@@ -87,7 +102,7 @@ export default function Login() {
                   id="emailAddress"
                   type="text"
                   required
-                  placeholder="Enter your user name"
+                  placeholder="Enter your email"
                   value={emailAddress}
                   onChange={(e) => setemailAddress(e.target.value)}
                 />
@@ -127,7 +142,7 @@ export default function Login() {
               <button type="submit" className="login-button">Login</button>
             </form>
             <div className="login-register-container">
-              <button type="button" className="register-button-login" onClick={handlesignup}>Register</button>
+              <button type="button" className="register-button-login" onClick={() => navigate('/signup')}>Register</button>
             </div>
           </div>
         </div>
@@ -135,4 +150,3 @@ export default function Login() {
     </div>
   );
 }
-

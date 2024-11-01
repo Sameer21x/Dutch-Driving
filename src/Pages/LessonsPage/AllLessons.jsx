@@ -5,7 +5,9 @@ import car from '../../assets/imgs/driving-amico 2.png';
 import axios from 'axios';
 import Loader from '../../Components/Loader';
 import { BaseUrl } from '../../Constants/Constant';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
+import { useUser } from '../../UserContext';
+
 
 
 import icon1 from '../../assets/icons/icon1.png';
@@ -22,10 +24,17 @@ export default function AllLessons() {
     const [lessons, setLessons] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const { userId } = useUser();
+    console.log("UserID is here on all lessons page",userId);
+    
+
+
 
 
     const selectlesson = (lessonId) => {
-        navigate("/Lessonqna", { state: { lessonId } });
+        navigate("/Lessonqna", { state: { lessonId,userId } });
     };
 
 

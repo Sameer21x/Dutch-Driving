@@ -12,10 +12,12 @@ import TermsAndConditions from './Pages/Terms&Conditions/TermsAndConditions';
 import QuizResult from './Pages/QuizResultPage/QuizResult';
 import QuizQuestion from './Pages/QuizQuestionsPage/QuizQuestion';
 import './App.css';  // Import your CSS file
+import { UserProvider } from './UserContext';
 
 function App() {
   return (
     <div className="App">
+      <UserProvider>
       <Router>
         <Routes>
           <Route path="/" element={<Login />} />
@@ -38,6 +40,7 @@ function App() {
 
         </Routes>
       </Router>
+      </UserProvider>
     </div>
   );
 }
