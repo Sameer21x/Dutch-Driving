@@ -6,6 +6,7 @@
   }
   
   .progress-bar {
+    width: 100%;
     height: 10px;
     background-color: #e0e0e0;
     border-radius: 5px;
@@ -53,7 +54,7 @@
   
   .question-image img {
     max-width: 100%;
-    height: auto;
+    height: 15rem;
   }
   
   .question-hint {
@@ -66,8 +67,8 @@
   }
   
   .hint-icon {
-    width: 24px;
-    height: 24px;
+    width: 24px!important;
+    height: 24px !important;
   }
   
   .answer-options {
@@ -93,11 +94,13 @@
     background-color: #FFF3E0;
   }
   
-  .answer-option.correct {
-    background-color: #4caf50;
+  .answer-option.selected {
+    background-color: #FE7F2D;
     color: white;
-    border-color: #4caf50;
+    border-color: #FE7F2D;
+    opacity: 0.8; /* Optional: Adjust for fade effect */
   }
+  
   
   .answer-option.incorrect {
     background-color: #f44336;

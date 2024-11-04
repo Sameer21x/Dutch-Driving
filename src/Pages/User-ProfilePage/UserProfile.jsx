@@ -26,6 +26,10 @@ export default function UserProfile() {
         navigate("/alllessons",{state:{userId}})
     }
 
+    const getQuizquestions=()=>{
+        navigate("/Quizqna",{state:{userId}})
+    }
+
 
 
     return (
@@ -80,7 +84,7 @@ export default function UserProfile() {
 
                 <section className="action-buttons">
                     <button className="btn btn-large" onClick={getlessons}>Learn Lessons</button>
-                    <button className="btn btn-large" >Attempt Quiz</button>
+                    <button className="btn btn-large" onClick={getQuizquestions} >Attempt Quiz</button>
                     <button className="btn btn-large">Check Results</button>
                 </section>
             </main>
