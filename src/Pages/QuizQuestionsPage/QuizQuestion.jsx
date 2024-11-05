@@ -13,14 +13,14 @@ export default function QuizQuestion() {
   const [quizData, setQuizData] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [selectedAnswers, setSelectedAnswers] = useState({});
   const [section, setSection] = useState('A');
   const [timeLimit, setTimeLimit] = useState(480);
-  const [answers, setAnswers] = useState([]);
   const [timeRemaining, setTimeRemaining] = useState(true);
   const [isModalActive, setIsModalActive] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [cumulativeScore, setCumulativeScore] = useState({ correct: 0, total: 0, totalTime: 0 });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { userId } = useUser();
   const navigate = useNavigate();
@@ -30,11 +30,14 @@ export default function QuizQuestion() {
   }, [section]);
 
   useEffect(() => {
-    if (currentQuestionIndex === quizData?.questions.length && quizData) {
+    if (quizData && currentQuestionIndex === quizData.questions.length) {
       showSubmitModal();
     }
   }, [currentQuestionIndex, quizData]);
-  
+
+  useEffect(() => {
+    console.log('Current selectedAnswers:', selectedAnswers);
+  }, [selectedAnswers]);
 
   const fetchQuizData = async () => {
     setLoading(true);
@@ -43,8 +46,7 @@ export default function QuizQuestion() {
       console.log('Quiz Data:', response.data.quiz);
       setQuizData(response.data.quiz);
       setCurrentQuestionIndex(0);
-      setSelectedAnswer(null);
-      setAnswers([]);
+      setSelectedAnswers({});
       setTimeRemaining(true);
       setIsModalActive(false);
       setStartTime(Date.now());
@@ -61,112 +63,94 @@ export default function QuizQuestion() {
     const currentQuestion = quizData.questions[currentQuestionIndex];
     const selectedOption = currentQuestion.answerOptions[index];
     
+    setSelectedAnswers(prev => {
+      const updatedAnswers = {
+        ...prev,
+        [currentQuestion._id]: {
+          _id: currentQuestion._id,
+          selectedOption: selectedOption.optionText,
+          isCorrect: selectedOption.isCorrect
+        }
+      };
+      console.log('Updated selectedAnswers:', updatedAnswers);
+      return updatedAnswers;
+    });
+    
     console.log('Selected Answer:', {
       questionId: currentQuestion._id,
       selectedOption: selectedOption.optionText,
       isCorrect: selectedOption.isCorrect
     });
-    
-    setSelectedAnswer(index);
   };
 
   const handleNextQuestion = () => {
-    if (selectedAnswer !== null) {
-      const currentQuestion = quizData.questions[currentQuestionIndex];
-      const selectedOption = currentQuestion.answerOptions[selectedAnswer];
-  
-      const newAnswer = {
-        _id: currentQuestion._id,
-        selectedOption: selectedOption.optionText,
-        isCorrect: selectedOption.isCorrect
-      };
-  
-      console.log('Adding answer:', newAnswer);
-  
-      // Use a functional update to ensure the previous state is used correctly
-      setAnswers(prevAnswers => [...prevAnswers, newAnswer]);
-    }
-  
     if (currentQuestionIndex < quizData.questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelectedAnswer(null);
     } else {
       showSubmitModal();
     }
   };
-  
 
   const handlePreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
-      const previousAnswer = answers[currentQuestionIndex - 1];
-      if (previousAnswer) {
-        const currentQuestion = quizData.questions[currentQuestionIndex - 1];
-        const answerIndex = currentQuestion.answerOptions.findIndex(
-          option => option.optionText === previousAnswer.selectedOption
-        );
-        setSelectedAnswer(answerIndex);
-      } else {
-        setSelectedAnswer(null);
-      }
     }
   };
 
   const submitSection = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
     try {
       const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
   
-      // Ensure we're using the most up-to-date answers state
-      setAnswers((prevAnswers) => {
-        const formattedAnswers = prevAnswers.map(({ _id, selectedOption }) => ({
-          _id,
-          selectedOption
-        }));
+      const formattedAnswers = Object.values(selectedAnswers).map(({ _id, selectedOption }) => ({
+        _id,
+        selectedOption
+      }));
   
-        console.log('Formatted answers:', formattedAnswers);
+      console.log('All selectedAnswers before formatting:', selectedAnswers);
+      console.log('Formatted answers:', formattedAnswers);
   
-        console.log('Submitting answers:', {
-          userId,
-          section,
-          answers: formattedAnswers,
-          totalTime: elapsedTime
-        });
-  
-        axios.post(`${BaseUrl}/quiz/submit`, {
-          userId,
-          section,
-          answers: formattedAnswers,
-          totalTime: elapsedTime
-        }).then(response => {
-          console.log('Submit response:', response.data);
-  
-          const correctCount = prevAnswers.filter(answer => answer.isCorrect).length;
-          console.log('Locally calculated correct answers:', correctCount);
-  
-          setCumulativeScore(prevScore => ({
-            correct: prevScore.correct + response.data.result.correctAnswers,
-            total: prevScore.total + response.data.result.totalQuestions,
-            totalTime: prevScore.totalTime + elapsedTime
-          }));
-  
-          if (section === 'C') {
-            showFinalModal();
-          } else {
-            setSection(String.fromCharCode(section.charCodeAt(0) + 1));
-          }
-        }).catch(error => {
-          console.error("Error submitting quiz section:", error);
-          Swal.fire({
-            icon: 'error',
-            title: 'Submission Error',
-            text: 'There was an error submitting your quiz. Please try again.',
-          });
-        });
-  
-        return prevAnswers; // Return the state as it was to avoid overwriting
+      console.log('Submitting answers:', {
+        userId,
+        section,
+        answers: formattedAnswers,
+        totalTime: elapsedTime
       });
+  
+      const response = await axios.post(`${BaseUrl}/quiz/submit`, {
+        userId,
+        section,
+        answers: formattedAnswers,
+        totalTime: elapsedTime
+      });
+  
+      console.log('Submit response:', response.data);
+  
+      const correctCount = Object.values(selectedAnswers).filter(answer => answer.isCorrect).length;
+      console.log('Locally calculated correct answers:', correctCount);
+  
+      setCumulativeScore(prevScore => ({
+        correct: prevScore.correct + response.data.result.correctAnswers,
+        total: prevScore.total + response.data.result.totalQuestions,
+        totalTime: prevScore.totalTime + elapsedTime
+      }));
+  
+      if (section === 'C') {
+        showFinalModal();
+      } else {
+        setSection(String.fromCharCode(section.charCodeAt(0) + 1));
+      }
     } catch (error) {
-      console.error("Error preparing for quiz submission:", error);
+      console.error("Error submitting quiz section:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Submission Error',
+        text: 'There was an error submitting your quiz. Please try again.',
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -266,7 +250,7 @@ export default function QuizQuestion() {
         {currentQuestion.answerOptions.map((option, index) => (
           <button
             key={option._id}
-            className={`answer-option ${selectedAnswer === index ? 'selected' : ''}`}
+            className={`answer-option ${selectedAnswers[currentQuestion._id]?.selectedOption === option.optionText ? 'selected' : ''}`}
             onClick={() => handleAnswerSelect(index)}
             disabled={!timeRemaining}
           >
