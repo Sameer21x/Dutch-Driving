@@ -1,9 +1,33 @@
 import React from 'react';
 import '../Terms&Conditions/TermsAndConditions.css';
+import profilepic from '../../assets/imgs/profilepic.png'
+// import car from '../../assets/imgs/driving-amico 2.png'
 
 export default function TermsAndConditions() {
     return (
         <div className="terms-and-conditions">
+            <header className="header">
+                <div className="logo">Dutch Driving</div>
+                <div className="header-right">
+                    <span className="about-us">About Us</span>
+                    <div className="user-icon">
+                        <img src={profilepic} alt="User" className="user-avatar" />
+                        <span>Lisa</span>
+                    </div>
+                    <div className="svg-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+
+
+                    </div>
+                </div>
+            </header>
 
             <header className="terms-header">
                 <h1>Terms & Conditions</h1>

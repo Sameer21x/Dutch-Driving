@@ -30,6 +30,10 @@ export default function UserProfile() {
         navigate("/Quizqna",{state:{userId}})
     }
 
+    const checkresults=()=>{
+        navigate("/QuizResult",{state:{userId}})
+    }
+
 
 
     return (
@@ -85,7 +89,7 @@ export default function UserProfile() {
                 <section className="action-buttons">
                     <button className="btn btn-large" onClick={getlessons}>Learn Lessons</button>
                     <button className="btn btn-large" onClick={getQuizquestions} >Attempt Quiz</button>
-                    <button className="btn btn-large">Check Results</button>
+                    <button className="btn btn-large" onClick={checkresults}>Check Results</button>
                 </section>
             </main>
         </div>

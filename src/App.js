@@ -23,14 +23,14 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/otp" element={<OTP />} />
-          <Route path='/Contactus' element={<Contactus />} />
-          <Route path='/MembershipPlan' element={<MembershipPlan />} />
+          <Route path='/contactus' element={<Contactus />} />
+          <Route path='/membershipplan' element={<MembershipPlan />} />
           <Route path='/userprofile' element={<UserProfile />} />
-          <Route path='/AllLessons' element={<AllLessons />} />
-          <Route path='/Lessonqna' element={<LessonQuestions />} />
-          <Route path='/Quizqna' element={<QuizQuestion />} />
-          <Route path='/TermsAndConditions' element={<TermsAndConditions />} />
-          <Route path='/QuizResult' element={<QuizResult />} />
+          <Route path='/alllessons' element={<AllLessons />} />
+          <Route path='/lessonqna' element={<LessonQuestions />} />
+          <Route path='/quizqna' element={<QuizQuestion />} />
+          <Route path='/termsandconditions' element={<TermsAndConditions />} />
+          <Route path='/quizresult' element={<QuizResult />} />
 
 
 
