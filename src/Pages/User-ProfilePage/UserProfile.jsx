@@ -27,11 +27,11 @@ export default function UserProfile() {
     }
 
     const getQuizquestions=()=>{
-        navigate("/Quizqna",{state:{userId}})
+        navigate("/quizqna",{state:{userId}})
     }
 
     const checkresults=()=>{
-        navigate("/QuizResult",{state:{userId}})
+        navigate("/quizresult",{state:{userId}})
     }
 
 
