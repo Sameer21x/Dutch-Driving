@@ -34,7 +34,7 @@ export default function AllLessons() {
 
 
     const selectlesson = (lessonId) => {
-        navigate("/Lessonqna", { state: { lessonId,userId } });
+        navigate("/lessonqna", { state: { lessonId,userId } });
     };
 
 
