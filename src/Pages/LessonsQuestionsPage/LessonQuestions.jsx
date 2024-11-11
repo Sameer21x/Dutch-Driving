@@ -9,7 +9,6 @@ import explainicon from '../../assets/icons/explainicon.png';
 import { BaseUrl } from '../../Constants/Constant';
 import { useUser } from '../../UserContext';
 
-
 export default function LessonQuestions() {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -17,6 +16,7 @@ export default function LessonQuestions() {
   const [isCorrect, setIsCorrect] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [completedOnce, setCompletedOnce] = useState(false);
 
   const { userId } = useUser();
   
@@ -43,7 +43,13 @@ export default function LessonQuestions() {
       });
 
       if (progressResponse.data && progressResponse.data.completedQuestions) {
-        setCurrentQuestionIndex(progressResponse.data.completedQuestions.length);
+        const completedCount = progressResponse.data.completedQuestions.length;
+        if (completedCount >= allQuestions.length) {
+          setCompletedOnce(true);
+          setCurrentQuestionIndex(0);
+        } else {
+          setCurrentQuestionIndex(completedCount);
+        }
       }
 
       setQuestions(allQuestions);
@@ -115,10 +121,17 @@ export default function LessonQuestions() {
           icon: 'success',
           title: 'Lesson Completed!',
           text: `You successfully completed Lesson ${lessonId}`,
-          confirmButtonText: 'Go to All Lessons'
+          confirmButtonText: 'Go to All Lessons',
+          showCancelButton: true,
+          cancelButtonText: 'Attempt Again'
         }).then((result) => {
           if (result.isConfirmed) {
             navigate('/alllessons');
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            setCurrentQuestionIndex(0);
+            setSelectedAnswer(null);
+            setIsCorrect(null);
+            setCompletedOnce(true);
           }
         });
       } else {
@@ -147,7 +160,7 @@ export default function LessonQuestions() {
   if (!currentQuestion) {
     return (
       <div className="lesson-question-page">
-        <h2>No questions available for this lesson.</h2>
+        <h2>Error: Unable to load questions. Please try again later.</h2>
       </div>
     );
   }
@@ -157,7 +170,10 @@ export default function LessonQuestions() {
       <div className="progress-bar">
         <div className="progress" style={{ width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }}></div>
       </div>
-      <div className="question-counter">{currentQuestionIndex + 1}/{questions.length}</div>
+      <div className="question-counter">
+        {currentQuestionIndex + 1}/{questions.length}
+        {completedOnce && <span className="completed-badge">Completed</span>}
+      </div>
 
       <div className="question-container">
         <h2 className="question">{currentQuestion.questionText}</h2>

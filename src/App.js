@@ -11,6 +11,7 @@ import LessonQuestions from './Pages/LessonsQuestionsPage/LessonQuestions';
 import TermsAndConditions from './Pages/Terms&Conditions/TermsAndConditions';
 import QuizResult from './Pages/QuizResultPage/QuizResult';
 import QuizQuestion from './Pages/QuizQuestionsPage/QuizQuestion';
+import AccountSettings from './Pages/Accountsettings/Accountsetting';
 import './App.css';  // Import your CSS file
 import { UserProvider } from './UserContext';
 
@@ -31,6 +32,8 @@ function App() {
           <Route path='/quizqna' element={<QuizQuestion />} />
           <Route path='/termsandconditions' element={<TermsAndConditions />} />
           <Route path='/quizresult' element={<QuizResult />} />
+          <Route path='/accsettings' element={<AccountSettings />} />
+
 
 
 
