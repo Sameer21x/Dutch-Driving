@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import '../Accountsettings/Accountsetting.css';
 import { Eye, EyeOff, Pencil, ChevronDown, LogOut } from 'lucide-react';
 import defaultAvatar from '../../assets/imgs/avatar.png';
-// import logo from '../../assets/imgs/totc-logo.png';
+import profilepic from '../../assets/imgs/profilepic.png'
 
 export default function AccountSettings() {
   const [showPassword, setShowPassword] = useState(false);
@@ -10,6 +10,11 @@ export default function AccountSettings() {
     username: 'Lina',
     email: 'lisa@gmail.com',
     password: '••••••••'
+  });
+  const [editableFields, setEditableFields] = useState({
+    username: false,
+    email: false,
+    password: false
   });
   const [profileImage, setProfileImage] = useState(defaultAvatar);
   const fileInputRef = useRef(null);
@@ -31,40 +36,50 @@ export default function AccountSettings() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    if (editableFields[name]) {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
+
+  const toggleEditable = (field) => {
+    setEditableFields(prev => ({
       ...prev,
-      [name]: value
+      [field]: !prev[field]
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
+    const editedData = Object.keys(editableFields).reduce((acc, field) => {
+      if (editableFields[field]) {
+        acc[field] = formData[field];
+      }
+      return acc;
+    }, {});
+    console.log('Form submitted:', editedData);
+    // Reset editable fields after submission
+    setEditableFields({
+      username: false,
+      email: false,
+      password: false
+    });
   };
 
   return (
     <div className="account-settings-page">
-      <header className="header">
-  <div className="header-content">
-    <div className="logo">
-      {/* <img src={logo} alt="TOTC Logo" /> */}
-      <span>TOTC</span>
-    </div>
-    
-    <div className="header-right">
-      <a href="/about" className="about-link">About Us</a>
-      <div className="user-profile">
-        <img src={profileImage} alt="User avatar" className="user-avatar" />
-        <span className="username">Lina</span>
-        <div className="header-icons">
-          <ChevronDown size={20} />
-          <LogOut size={20} />
+      <header className="header-accountsettings">
+        <div className="logo">Dutch Driving</div>
+        <div className="header-right">
+          <span>About Us</span>
+          <div className="user-profile-accountsettings">
+            <img src={profilepic} alt="User" className="user-avatar" />
+            <span>Lisa</span>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-</header>
+      </header>
 
       <div className="account-settings">
         <div className="title-container">
@@ -94,8 +109,13 @@ export default function AccountSettings() {
                 name="username"
                 value={formData.username}
                 onChange={handleInputChange}
+                disabled={!editableFields.username}
               />
-              <Pencil className="edit-icon" size={20} />
+              <Pencil 
+                className="edit-icon" 
+                size={20} 
+                onClick={() => toggleEditable('username')}
+              />
             </div>
           </div>
 
@@ -107,8 +127,13 @@ export default function AccountSettings() {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
+                disabled={!editableFields.email}
               />
-              <Pencil className="edit-icon" size={20} />
+              <Pencil 
+                className="edit-icon" 
+                size={20} 
+                onClick={() => toggleEditable('email')}
+              />
             </div>
           </div>
 
@@ -120,6 +145,7 @@ export default function AccountSettings() {
                 name="password"
                 value={formData.password}
                 onChange={handleInputChange}
+                disabled={!editableFields.password}
               />
               <button
                 type="button"
@@ -128,7 +154,11 @@ export default function AccountSettings() {
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
-              <Pencil className="edit-icon" size={20} />
+              <Pencil 
+                className="edit-icon" 
+                size={20} 
+                onClick={() => toggleEditable('password')}
+              />
             </div>
           </div>
 

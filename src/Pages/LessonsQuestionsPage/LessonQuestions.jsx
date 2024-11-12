@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import '../LessonsQuestionsPage/LessonQuestions.css';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -8,6 +8,7 @@ import questionsimage from '../../assets/imgs/lessonqna.png';
 import explainicon from '../../assets/icons/explainicon.png';
 import { BaseUrl } from '../../Constants/Constant';
 import { useUser } from '../../UserContext';
+import { Pause, Play } from 'lucide-react';
 
 export default function LessonQuestions() {
   const [questions, setQuestions] = useState([]);
@@ -17,8 +18,12 @@ export default function LessonQuestions() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [completedOnce, setCompletedOnce] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audioProgress, setAudioProgress] = useState(0);
+  const [audioDuration, setAudioDuration] = useState(0);
 
   const { userId } = useUser();
+  const audioRef = useRef(new Audio());
   
   const { state } = useLocation();
   const { lessonId } = state || {}; 
@@ -33,11 +38,10 @@ export default function LessonQuestions() {
   const loadUserProgressAndQuestions = async () => {
     setLoading(true);
     try {
-      // First, get all questions for the lesson
       const questionsResponse = await axios.get(`${BaseUrl}/lessons/${lessonId}/questions`);
       const allQuestions = questionsResponse.data.questions;
+      console.log(allQuestions[0].explanationAudio, "Explanation audio of the first question");      
 
-      // Then, get the user's progress
       const progressResponse = await axios.get(`${BaseUrl}/lessons/progress`, {
         params: { userId, lessonId }
       });
@@ -60,7 +64,75 @@ export default function LessonQuestions() {
     }
   };
 
+  const handleExplanationClick = () => {
+    const currentQuestion = questions[currentQuestionIndex];
+    if (!currentQuestion?.explanationAudio) return;
+
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      if (audioRef.current.src !== currentQuestion.explanationAudio) {
+        audioRef.current.src = currentQuestion.explanationAudio;
+        audioRef.current.load();
+      }
+      audioRef.current.play();
+      setIsPlaying(true);
+    }
+  };
+
+  useEffect(() => {
+    const audio = audioRef.current;
+
+    const handleTimeUpdate = () => {
+      setAudioProgress((audio.currentTime / audio.duration) * 100);
+    };
+
+    const handleLoadedMetadata = () => {
+      setAudioDuration(audio.duration);
+    };
+
+    const handleEnded = () => {
+      setIsPlaying(false);
+      setAudioProgress(0);
+    };
+
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audio.addEventListener('ended', handleEnded);
+
+    return () => {
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.removeEventListener('ended', handleEnded);
+      audio.pause();
+    };
+  }, []);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    setIsPlaying(false);
+    setAudioProgress(0);
+    
+    const currentQuestion = questions[currentQuestionIndex];
+    if (currentQuestion?.explanationAudio) {
+      audio.src = currentQuestion.explanationAudio;
+      audio.load();
+    }
+
+    return () => {
+      audio.pause();
+    };
+  }, [currentQuestionIndex, questions]);
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   const handleAnswerSelect = (index) => {
+    const currentQuestion = questions[currentQuestionIndex];
     if (currentQuestion && currentQuestion.answerOptions) {
       setSelectedAnswer(index);
       setIsCorrect(currentQuestion.answerOptions[index].isCorrect);
@@ -81,7 +153,6 @@ export default function LessonQuestions() {
         setSelectedAnswer(null);
         setIsCorrect(null);
       } else {
-        // All questions completed
         handleSaveProgress(true);
       }
     }
@@ -172,16 +243,32 @@ export default function LessonQuestions() {
       </div>
       <div className="question-counter">
         {currentQuestionIndex + 1}/{questions.length}
-        {completedOnce && <span className="completed-badge">Completed</span>}
+        {completedOnce && <span className="completed-badge"></span>}
       </div>
 
       <div className="question-container">
         <h2 className="question">{currentQuestion.questionText}</h2>
         <div className="question-image">
           <img src={currentQuestion.questionImage || questionsimage} alt="Question illustration" />
-          <div className="question-hint">
+          <div className="question-hint" onClick={handleExplanationClick}>
             <img src={explainicon} alt="Hint icon" className="hint-icon" />
             <span className="hint-count">1</span>
+            {currentQuestion.explanationAudio && (
+              <div className={`audio-progress ${isPlaying ? 'playing' : ''}`}>
+                <div className="audio-progress-bar">
+                  <div 
+                    className="audio-progress-fill" 
+                    style={{ width: `${audioProgress}%` }}
+                  />
+                </div>
+                <div className="audio-time">
+                  {formatTime(audioDuration * (audioProgress / 100))} / {formatTime(audioDuration)}
+                </div>
+                <span className="audio-icon">
+                  {isPlaying ? <Pause size={16} /> : <Play size={16} />}
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>

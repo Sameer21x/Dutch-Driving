@@ -2,61 +2,38 @@
     min-height: 100vh;
     background-color: #fff;
   }
-  
-  .header {
-    background-color: #FF7629;
-    padding: 1rem 2rem;
-    height: 5rem;
-  }
-  
-  .header-content {
-    max-width: 1200px;
-    margin: 0 auto;
+  .header-accountsettings {
     display: flex;
+    height: 70px;
     justify-content: space-between;
     align-items: center;
+    padding: 1rem 2rem;
+    color: white;
+    background-color: #FE7F2D;
   }
   
   .logo {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: white;
-    font-size: 1.5rem;
     font-weight: bold;
-  }
-  
-  .logo img {
-    height: 2rem;
-    width: auto;
-  }
+    font-size: 1.2rem;
+    color: white;
+}
   
   .header-right {
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
   }
   
-  .about-link {
-    color: white;
-    text-decoration: none;
-    font-size: 1rem;
-  }
-  
-  .user-profile {
+  .user-profile-accountsettings {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: white;
-    cursor: pointer;
   }
   
   .user-avatar {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid white;
   }
   
   .username {
@@ -129,7 +106,7 @@
   }
   
   .form-group label {
-    display: block;
+    display: flex;
     margin-bottom: 0.5rem;
     color: #666;
     font-size: 0.875rem;
@@ -186,6 +163,23 @@
   
   .save-button:hover {
     background-color: #e66a24;
+  }
+
+  .input-container input:disabled {
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+  }
+  
+  .edit-icon {
+    position: absolute;
+    right: 12px;
+    color: #FFB38A;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .edit-icon:hover {
+    color: #FF7629;
   }
   
   /* Responsive adjustments */

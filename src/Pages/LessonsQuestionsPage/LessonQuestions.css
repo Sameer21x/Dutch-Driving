@@ -44,29 +44,96 @@
   
   .question-image img {
     max-width: 100%;
-    height: auto;
+    height: 20rem;
   }
   
   .question-hint {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
+    position: relative;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    background-color: white;
-    border-radius: 50%;
-    padding: 5px;
+    gap: 0.5rem;
   }
   
+  .audio-progress {
+    position: absolute;
+    left: calc(100% + 12px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 180px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 10;
+  }
+  
+  .question-hint:hover .audio-progress,
+  .audio-progress.playing {
+    opacity: 1;
+  }
+  
+  .audio-progress-bar {
+    flex: 1;
+    height: 4px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .audio-progress-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: #FF7629;
+    border-radius: 2px;
+    transition: width 0.1s linear;
+  }
+  
+  .audio-time {
+    font-size: 12px;
+    color: #666;
+    min-width: 70px;
+    text-align: center;
+    font-family: monospace;
+  }
+  
+  .audio-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #f5f5f5;
+    cursor: pointer;
+    color: #333;
+    transition: background-color 0.2s ease;
+  }
+  
+  .audio-icon:hover {
+    background: #eeeeee;
+  }
+  
+  /* Ensure the hint icon and count are properly styled */
   .hint-icon {
     width: 24px;
     height: 24px;
+    object-fit: contain;
   }
   
   .hint-count {
-    font-size: 14px;
-    margin-left: 5px;
+    font-size: 12px;
+    color: #666;
   }
+  
   
   .answer-options {
     display: flex;
