@@ -1,8 +1,64 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import '../MembershipPage/MembershipPlan.css';
-import profilepic from '../../assets/imgs/profilepic.png'
+import profilepic from '../../assets/imgs/profilepic.png';
+import { useUser } from '../../UserContext';
+import { BaseUrl } from '../../Constants/Constant';
+import Loader from '../../Components/Loader';
+import Swal from 'sweetalert2';
 
 export default function MembershipPlan() {
+  const [loading, setLoading] = useState(false);
+  const { userId } = useUser();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const status = urlParams.get('payment_status');
+
+    if (status === 'success') {
+      Swal.fire({
+        icon: 'success',
+        title: 'Payment Successful',
+        text: 'Your membership has been updated.',
+      });
+    } else if (status === 'cancel') {
+      Swal.fire({
+        icon: 'error',
+        title: 'Payment Cancelled',
+        text: 'Your payment was cancelled. Please try again.',
+      });
+    }
+  }, [location]);
+
+  const handleBuyNow = async (planType) => {
+    setLoading(true);
+
+    try {
+      const response = await axios.post(`${BaseUrl}/user/updateMembershipPlan`, {
+        userId,
+        membershipPlanType: planType
+      });
+
+      window.location.href = response.data.checkoutUrl;
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'An error occurred while processing your request. Please try again.',
+      });
+      console.error('Error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <div className="membership-page">
       <header className="header-membership">
@@ -28,7 +84,9 @@ export default function MembershipPlan() {
               <li>Sales-boosting landing pages</li><br />
               <li>Awesome Feather icons pack</li>
             </ul>
-            <button className="buy-button">Buy Now</button>
+            <button className="buy-button" onClick={() => handleBuyNow('1month')}>
+              Buy Now
+            </button>
           </div>
 
           <div className="plan featured">
@@ -41,7 +99,9 @@ export default function MembershipPlan() {
               <li>Themed into 3 different styles</li><br />
               <li>Will help to learn Figma</li>
             </ul>
-            <button className="buy-button">Buy Now</button>
+            <button className="buy-button" onClick={() => handleBuyNow('3months')}>
+              Buy Now
+            </button>
           </div>
 
           <div className="plan">
@@ -53,7 +113,9 @@ export default function MembershipPlan() {
               <li>Awesome Feather icons pack</li><br />
               <li>Themed into 3 different styles</li>
             </ul>
-            <button className="buy-button">Buy Now</button>
+            <button className="buy-button" onClick={() => handleBuyNow('6months')}>
+              Buy Now
+            </button>
           </div>
         </div>
 

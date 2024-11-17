@@ -34,6 +34,10 @@ export default function UserProfile() {
         navigate("/quizresult",{state:{userId}})
     }
 
+    const handleaboutus=()=>{
+        navigate("/aboutus",{state:{userId}})
+    }
+
 
 
     return (
@@ -41,7 +45,7 @@ export default function UserProfile() {
             <header className="header">
                 <div className="logo">Dutch Driving</div>
                 <div className="header-right">
-                    <span className="about-us">About Us</span>
+                    <span className="about-us" onClick={handleaboutus}>About Us</span>
                     <div className="user-icon">
                         <img src={profilepic} alt="User" className="user-avatar" />
                         <span>Lisa</span>
