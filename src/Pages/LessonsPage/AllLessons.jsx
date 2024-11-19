@@ -133,8 +133,8 @@ export default function AllLessons() {
                         <button className="subscribe-button">Subscribe</button>
                     </div>
                     <div className="footer-links">
-                        <a href="#" className="footer-link">Privacy Policy</a>
-                        <a href="#" className="footer-link">Terms & Conditions</a>
+                    <a href="/help" className="footer-link">Help & Support</a>
+                    <a href="/termsandconditions" className="footer-link">Terms & Conditions</a>
                     </div>
                     <div className="copyright">© 2024 Class Technologies Inc.</div>
                 </div>

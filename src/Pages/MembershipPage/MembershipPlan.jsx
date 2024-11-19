@@ -90,8 +90,8 @@ export default function MembershipPlan() {
           </div>
 
           <div className="plan featured">
-            <h2 className="plan-title">3 Months</h2>
-            <p className="plan-price">14.99 €</p>
+            <h2 className="plan-title">6 Months</h2>
+            <p className="plan-price">9.99 €</p>
             <ul className="plan-features">
               <li>Comprehensive driven system</li><br />
               <li>Sales-boosting landing pages</li><br />
@@ -99,21 +99,21 @@ export default function MembershipPlan() {
               <li>Themed into 3 different styles</li><br />
               <li>Will help to learn Figma</li>
             </ul>
-            <button className="buy-button" onClick={() => handleBuyNow('3months')}>
+            <button className="buy-button" onClick={() => handleBuyNow('6months')}>
               Buy Now
             </button>
           </div>
 
           <div className="plan">
-            <h2 className="plan-title">6 Months</h2>
-            <p className="plan-price">9.99 €</p>
+            <h2 className="plan-title">3 Months</h2>
+            <p className="plan-price">14.99 €</p>
             <ul className="plan-features">
               <li>Comprehensive driven system</li><br />
               <li>Sales-boosting landing pages</li><br />
               <li>Awesome Feather icons pack</li><br />
               <li>Themed into 3 different styles</li>
             </ul>
-            <button className="buy-button" onClick={() => handleBuyNow('6months')}>
+            <button className="buy-button" onClick={() => handleBuyNow('3months')}>
               Buy Now
             </button>
           </div>
@@ -136,8 +136,8 @@ export default function MembershipPlan() {
             <button className="subscribe-button">Subscribe</button>
           </div>
           <div className="footer-links">
-            <a href="#" className="footer-link">Privacy Policy</a>
-            <a href="#" className="footer-link">Terms & Conditions</a>
+            <a href="/help" className="footer-link">Help & Support</a>
+            <a href="/termsandconditions" className="footer-link">Terms & Conditions</a>
           </div>
           <div className="copyright">© 2024 Class Technologies Inc.</div>
         </div>

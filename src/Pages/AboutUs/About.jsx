@@ -1,18 +1,23 @@
 import React from 'react';
 import '../AboutUs/About.css';
 import profilepic from '../../assets/imgs/profilepic.png';
+import { useNavigate } from 'react-router-dom';
+
 
 export default function Aboutus() {
+
+  const navigate = useNavigate();
+
   return (
     <div className="aboutus-page">
       <header className="header-aboutus">
-        <div className="logo">Dutch Driving</div>
+        <div className="logo" onClick={() => navigate('/')}>Dutch Driving</div>
         <div className="header-right">
           <span>About Us</span>
-          <div className="user-profile-aboutus">
+          {/* <div className="user-profile-aboutus">
             <img src={profilepic} alt="User" className="user-avatar" />
             <span>Lisa</span>
-          </div>
+          </div> */}
         </div>
       </header>
 
@@ -64,8 +69,8 @@ export default function Aboutus() {
             <button className="subscribe-button">Subscribe</button>
           </div>
           <div className="footer-links">
-            <a href="#" className="footer-link">Privacy Policy</a>
-            <a href="#" className="footer-link">Terms & Conditions</a>
+          <a href="/help" className="footer-link">Help & Support</a>
+          <a href="/termsandconditions" className="footer-link">Terms & Conditions</a>
           </div>
           <div className="copyright">© 2024 Class Technologies Inc.</div>
         </div>

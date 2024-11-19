@@ -1,16 +1,21 @@
 import React from 'react';
 import '../Terms&Conditions/TermsAndConditions.css';
 import profilepic from '../../assets/imgs/profilepic.png'
+import { useNavigate } from 'react-router-dom';
 // import car from '../../assets/imgs/driving-amico 2.png'
 
 export default function TermsAndConditions() {
+
+    const navigate = useNavigate();
+
+    
     return (
         <div className="terms-and-conditions">
             <header className="header">
-                <div className="logo">Dutch Driving</div>
+                <div className="logo" onClick={() => navigate('/')}>Dutch Driving</div>
                 <div className="header-right">
-                    <span className="about-us">About Us</span>
-                    <div className="user-icon">
+                    <span className="about-us" onClick={() => navigate('/aboutus')}>About Us</span>
+                    {/* <div className="user-icon">
                         <img src={profilepic} alt="User" className="user-avatar" />
                         <span>Lisa</span>
                     </div>
@@ -25,7 +30,7 @@ export default function TermsAndConditions() {
                         </svg>
 
 
-                    </div>
+                    </div> */}
                 </div>
             </header>
 
@@ -81,8 +86,8 @@ export default function TermsAndConditions() {
                         <button className="subscribe-button">Subscribe</button>
                     </div>
                     <div className="footer-links">
-                        <a href="#" className="footer-link">Privacy Policy</a>
-                        <a href="#" className="footer-link">Terms & Conditions</a>
+                    <a href="/help" className="footer-link">Help & Support</a>
+                    <a href="/termsandconditions" className="footer-link">Terms & Conditions</a>
                     </div>
                     <div className="copyright">© 2024 Class Technologies Inc.</div>
                 </div>
