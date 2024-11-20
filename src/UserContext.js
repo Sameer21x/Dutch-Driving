@@ -6,6 +6,7 @@ export const UserProvider = ({ children }) => {
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
+    // Load the userId from localStorage when the app starts
     const storedUserId = localStorage.getItem('userId');
     if (storedUserId) {
       setUserId(storedUserId);
@@ -13,17 +14,25 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   const login = (newUserId) => {
+    // Save the userId to state and localStorage upon login
+    setUserId(newUserId);
+    localStorage.setItem('userId', newUserId);
+  };
+
+  const signup = (newUserId) => {
+    // Save the userId to state and localStorage upon signup
     setUserId(newUserId);
     localStorage.setItem('userId', newUserId);
   };
 
   const logout = () => {
+    // Clear the userId from state and localStorage upon logout
     setUserId(null);
     localStorage.removeItem('userId');
   };
 
   return (
-    <UserContext.Provider value={{ userId, login, logout }}>
+    <UserContext.Provider value={{ userId, login, signup, logout }}>
       {children}
     </UserContext.Provider>
   );
@@ -31,7 +40,7 @@ export const UserProvider = ({ children }) => {
 
 export const useUser = () => {
   const context = useContext(UserContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useUser must be used within a UserProvider');
   }
   return context;

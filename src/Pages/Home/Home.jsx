@@ -36,8 +36,8 @@ export default function Home() {
                         <h1>Learn Driving Online,<br />Anytime, Anywhere Easily!</h1>
                         <p>Dutch Driving is an interesting platform that will teach you in more an interactive way</p>
                         <div className="cta-buttons">
-                            <button className='login-btn'>Login</button>
-                            <button className='signup-btn'>Sign Up</button>
+                            <button className='login-btn' onClick={() => navigate('/login')}>Login</button>
+                            <button className='signup-btn' onClick={() => navigate('/signup')}>Sign Up</button>
                         </div>
                     </div>
                     <div className="hero-image">

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../QuizResultPage/QuizResult.css';
 import profilepic from '../../assets/imgs/profilepic.png';
@@ -18,6 +19,9 @@ const AttemptCard = ({ attempt, correctAnswers, totalQuestions, totalTime, dateA
     if (percentage >= 60) return '#FFC107';
     return '#FF5722';
   };
+
+  const navigate = useNavigate();
+
 
   return (
     <div className="attempt-card">
@@ -60,6 +64,8 @@ export default function QuizResult() {
   const [loading, setLoading] = useState(true);
   const [quizResults, setQuizResults] = useState([]);
   const { userId } = useUser();
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchQuizResults = async () => {
@@ -116,7 +122,7 @@ export default function QuizResult() {
   return (
     <div className="quiz-result-page">
       <header className="header">
-        <div className="logo">Dutch Driving</div>
+        <div className="logo" onClick={() => navigate('/userprofile')}>Dutch Driving</div>
         <div className="header-right">
           <span className="about-us">About Us</span>
           <div className="user-icon">

@@ -8,13 +8,14 @@ import questionsimage from '../../assets/imgs/lessonqna.png';
 import explainicon from '../../assets/icons/explainicon.png';
 import { BaseUrl } from '../../Constants/Constant';
 import { useUser } from '../../UserContext';
-import { Pause, Play } from 'lucide-react';
+import { Pause, Play, ArrowLeft, ArrowRight } from 'lucide-react';
 
 export default function LessonQuestions() {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
+  const [showResult, setShowResult] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [completedOnce, setCompletedOnce] = useState(false);
@@ -24,11 +25,11 @@ export default function LessonQuestions() {
 
   const { userId } = useUser();
   const audioRef = useRef(new Audio());
-  
+
   const { state } = useLocation();
-  const { lessonId } = state || {}; 
+  const { lessonId } = state || {};
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     if (lessonId && userId) {
       loadUserProgressAndQuestions();
@@ -40,7 +41,7 @@ export default function LessonQuestions() {
     try {
       const questionsResponse = await axios.get(`${BaseUrl}/lessons/${lessonId}/questions`);
       const allQuestions = questionsResponse.data.questions;
-      console.log(allQuestions[0].explanationAudio, "Explanation audio of the first question");      
+      console.log(allQuestions[0].explanationAudio, "Explanation audio of the first question");
 
       const progressResponse = await axios.get(`${BaseUrl}/lessons/progress`, {
         params: { userId, lessonId }
@@ -113,7 +114,7 @@ export default function LessonQuestions() {
     const audio = audioRef.current;
     setIsPlaying(false);
     setAudioProgress(0);
-    
+
     const currentQuestion = questions[currentQuestionIndex];
     if (currentQuestion?.explanationAudio) {
       audio.src = currentQuestion.explanationAudio;
@@ -132,29 +133,40 @@ export default function LessonQuestions() {
   };
 
   const handleAnswerSelect = (index) => {
-    const currentQuestion = questions[currentQuestionIndex];
-    if (currentQuestion && currentQuestion.answerOptions) {
-      setSelectedAnswer(index);
-      setIsCorrect(currentQuestion.answerOptions[index].isCorrect);
-    }
+    setSelectedAnswer(index);
+    setShowResult(false);
   };
 
   const getAnswerClass = (index) => {
-    if (selectedAnswer === index) {
-      return isCorrect ? 'correct' : 'incorrect';
+    if (selectedAnswer === index && !showResult) {
+      return 'selected';
+    }
+    if (showResult) {
+      if (questions[currentQuestionIndex].answerOptions[index].isCorrect) {
+        return 'correct';
+      }
+      if (selectedAnswer === index) {
+        return 'incorrect';
+      }
     }
     return '';
   };
 
-  const handleNext = () => {
+  const handleSubmit = () => {
     if (selectedAnswer !== null) {
-      if (currentQuestionIndex < questions.length - 1) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-        setSelectedAnswer(null);
-        setIsCorrect(null);
-      } else {
-        handleSaveProgress(true);
-      }
+      setIsCorrect(questions[currentQuestionIndex].answerOptions[selectedAnswer].isCorrect);
+      setShowResult(true);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setSelectedAnswer(null);
+      setIsCorrect(null);
+      setShowResult(false);
+    } else {
+      handleSaveProgress(true);
     }
   };
 
@@ -163,6 +175,7 @@ export default function LessonQuestions() {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setSelectedAnswer(null);
       setIsCorrect(null);
+      setShowResult(false);
     }
   };
 
@@ -171,57 +184,59 @@ export default function LessonQuestions() {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
       setSelectedAnswer(null);
       setIsCorrect(null);
+      setShowResult(false);
     }
   };
 
   const handleSaveProgress = (isCompleted = false) => {
     console.log("Saving progress...");
     console.log("UserId:", userId, "LessonId:", lessonId, "Completed Questions:", currentQuestionIndex + 1);
-    
+
     setSaving(true);
-    
+
     axios.post(`${BaseUrl}/lessons/progress`, {
       userId,
       lessonId,
       completedQuestions: currentQuestionIndex + 1,
     })
-    .then(() => {
-      setSaving(false);
-      if (isCompleted) {
+      .then(() => {
+        setSaving(false);
+        if (isCompleted) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Lesson Completed!',
+            text: `You successfully completed Lesson ${lessonId}`,
+            confirmButtonText: 'Go to All Lessons',
+            showCancelButton: true,
+            cancelButtonText: 'Attempt Again'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              navigate('/alllessons');
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+              setCurrentQuestionIndex(0);
+              setSelectedAnswer(null);
+              setIsCorrect(null);
+              setShowResult(false);
+              setCompletedOnce(true);
+            }
+          });
+        } else {
+          Swal.fire({
+            icon: 'success',
+            title: 'Progress Saved',
+            text: 'Your progress has been saved successfully!',
+          });
+        }
+      })
+      .catch(error => {
+        setSaving(false);
+        console.error("Error saving progress:", error?.response || error);
         Swal.fire({
-          icon: 'success',
-          title: 'Lesson Completed!',
-          text: `You successfully completed Lesson ${lessonId}`,
-          confirmButtonText: 'Go to All Lessons',
-          showCancelButton: true,
-          cancelButtonText: 'Attempt Again'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            navigate('/alllessons');
-          } else if (result.dismiss === Swal.DismissReason.cancel) {
-            setCurrentQuestionIndex(0);
-            setSelectedAnswer(null);
-            setIsCorrect(null);
-            setCompletedOnce(true);
-          }
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to save progress. Please try again.',
         });
-      } else {
-        Swal.fire({
-          icon: 'success',
-          title: 'Progress Saved',
-          text: 'Your progress has been saved successfully!',
-        });
-      }
-    })
-    .catch(error => {
-      setSaving(false);
-      console.error("Error saving progress:", error?.response || error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Failed to save progress. Please try again.',
       });
-    });
   };
 
   if (loading || saving) return <Loader />;
@@ -256,8 +271,8 @@ export default function LessonQuestions() {
             {currentQuestion.explanationAudio && (
               <div className={`audio-progress ${isPlaying ? 'playing' : ''}`}>
                 <div className="audio-progress-bar">
-                  <div 
-                    className="audio-progress-fill" 
+                  <div
+                    className="audio-progress-fill"
                     style={{ width: `${audioProgress}%` }}
                   />
                 </div>
@@ -279,6 +294,7 @@ export default function LessonQuestions() {
             key={option._id || index}
             className={`answer-option ${getAnswerClass(index)}`}
             onClick={() => handleAnswerSelect(index)}
+            disabled={showResult}
           >
             {option.optionText}
           </button>
@@ -287,15 +303,21 @@ export default function LessonQuestions() {
 
       <div className="navigation-buttons">
         <div className="button-row">
-          <button className="nav-button-back" onClick={handleGoBack} disabled={currentQuestionIndex === 0}>Go Back</button>
-          <button className="nav-button" onClick={handleNext} disabled={selectedAnswer === null}>
-            {currentQuestionIndex === questions.length - 1 ? 'Finish' : 'Next'}
+          <button className="nav-button-back" onClick={handleGoBack} disabled={currentQuestionIndex === 0}>
+            <ArrowLeft size={20} />
+          </button>
+
+          <button className="nav-button" onClick={handleNext} disabled={!showResult}>
+            {currentQuestionIndex === questions.length - 1 ? 'Finish' : <ArrowRight size={20} />}
           </button>
         </div>
         <div className="button-row">
           <button className="nav-button-skip" onClick={handleSkip} disabled={currentQuestionIndex === questions.length - 1}>Skip Question</button>
           <button className="nav-button-save" onClick={() => handleSaveProgress(false)}>Save Progress</button>
         </div>
+        <button className="nav-button-submit" onClick={handleSubmit} disabled={selectedAnswer === null || showResult}>
+          Check Answer
+        </button>
       </div>
     </div>
   );

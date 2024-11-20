@@ -169,6 +169,44 @@
     color: white;
     border-color: #f44336;
   }
+
+  .answer-option {
+    /* ... (previous styles remain unchanged) ... */
+    transition: background-color 0.3s ease;
+  }
+  
+  .answer-option.selected {
+    background-color: #FFE0B2; /* Light orange for selected state */
+  }
+  
+  .answer-option.correct {
+    background-color: #C8E6C9; /* Light green for correct answer */
+  }
+  
+  .answer-option.incorrect {
+    background-color: #FFCDD2; /* Light red for incorrect answer */
+  }
+  
+  .nav-button-submit {
+    background-color: #4CAF50; /* Green color for submit button */
+    color: white;
+    width: 100%;
+    border: solid #657782;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .nav-button-submit:hover {
+    background-color: #45a049;
+  }
+  
+  .nav-button-submit:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
   
   .navigation-buttons {
     display: flex;

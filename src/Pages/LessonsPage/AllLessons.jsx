@@ -76,7 +76,7 @@ export default function AllLessons() {
                 </div>
             </header>
 
-            <main className="main-content">
+            <main className="main-lesson-content">
                 {loading ? (
                     <Loader />
                 ) : (

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../Accountsettings/Accountsetting.css';
-import { Eye, EyeOff, Pencil, ChevronDown, LogOut } from 'lucide-react';
+import { Eye, EyeOff, Pencil, } from 'lucide-react';
 import defaultAvatar from '../../assets/imgs/avatar.png';
 import { useUser } from '../../UserContext';
 import { BaseUrl } from '../../Constants/Constant';
@@ -9,6 +10,9 @@ import Swal from 'sweetalert2';
 import axios from 'axios';
 
 export default function AccountSettings() {
+  const navigate = useNavigate();
+
+
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     username: '',
@@ -24,9 +28,13 @@ export default function AccountSettings() {
     password: false
   });
   const [profileImage, setProfileImage] = useState(defaultAvatar);
+  const [profileImageUrl, setProfileImageUrl] = useState('');
+  const [imageChanged, setImageChanged] = useState(false);
   const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const { userId } = useUser();
+  console.log(userId,"userid is here on accountsettings page");
+  
 
   useEffect(() => {
     fetchUserDetails();
@@ -44,7 +52,10 @@ export default function AccountSettings() {
         validity: calculateValidity(user.membershipPlan.startDate, user.membershipPlan.endDate),
         cost: user.membershipPlan.cost
       });
-      setProfileImage(user.profilePic || defaultAvatar);
+      if (user.profilePic) {
+        setProfileImage(user.profilePic);
+        setProfileImageUrl(user.profilePic);
+      }
       setLoading(false);
     } catch (error) {
       console.error('Error fetching user details:', error);
@@ -64,14 +75,55 @@ export default function AccountSettings() {
     fileInputRef.current.click();
   };
 
-  const handleImageChange = (event) => {
+  const handleImageChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
+      // Show preview immediately
       const reader = new FileReader();
       reader.onloadend = () => {
         setProfileImage(reader.result);
       };
       reader.readAsDataURL(file);
+
+      // Upload to server
+      try {
+        setLoading(true);
+        const formData = new FormData();
+        formData.append('userId', userId);
+        formData.append('image', file);
+
+        const response = await axios.post(`${BaseUrl}/user/uploadprofilepic`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        console.log('Full API response:', response);
+
+        if (response.data && response.data.profilePic) {
+          setProfileImageUrl(response.data.profilePic);
+          setProfileImage(response.data.profilePic);
+          setImageChanged(true);
+          Swal.fire('Success', 'Profile picture uploaded successfully', 'success');
+        } else {
+          console.error('Unexpected response structure:', response.data);
+          throw new Error('Profile picture URL not received from server');
+        }
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        if (error.response) {
+          console.error('Error response:', error.response.data);
+          console.error('Error status:', error.response.status);
+          console.error('Error headers:', error.response.headers);
+        } else if (error.request) {
+          console.error('Error request:', error.request);
+        } else {
+          console.error('Error message:', error.message);
+        }
+        Swal.fire('Error', 'Failed to upload profile picture', 'error');
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -95,6 +147,8 @@ export default function AccountSettings() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    
+    // Prepare update data
     const editedData = Object.keys(editableFields).reduce((acc, field) => {
       if (editableFields[field]) {
         acc[field] = formData[field];
@@ -102,10 +156,17 @@ export default function AccountSettings() {
       return acc;
     }, {});
 
+    // Add profile picture URL if it was changed
+    if (imageChanged) {
+      editedData.profilePic = profileImageUrl;
+    }
+
     try {
       const response = await axios.put(`${BaseUrl}/user/update/${userId}`, editedData);
       setLoading(false);
+      setImageChanged(false);
       Swal.fire('Success', 'Account details updated successfully', 'success');
+      
       // Reset editable fields after submission
       setEditableFields({
         username: false,
@@ -122,10 +183,12 @@ export default function AccountSettings() {
     return <Loader />;
   }
 
+  // Rest of the component remains the same
   return (
     <div className="account-settings-page">
+      {/* ... (header section remains unchanged) ... */}
       <header className="header-accountsettings">
-        <div className="logo">Dutch Driving</div>
+        <div className="logo" onClick={() => navigate('/userprofile')}>Dutch Driving</div>
         <div className="header-right">
           <span>About Us</span>
           <div className="user-profile-accountsettings">
@@ -155,6 +218,7 @@ export default function AccountSettings() {
             />
           </div>
 
+          {/* ... (rest of the form fields remain unchanged) ... */}
           <div className="form-group">
             <label>Username</label>
             <div className="input-container">
