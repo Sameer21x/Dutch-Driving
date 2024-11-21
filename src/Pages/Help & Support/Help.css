@@ -39,7 +39,6 @@
   
   .help-content {
     margin: 0rem auto;
-    padding: 0 1rem;
   }
   
   .main-help-heading {
@@ -197,8 +196,9 @@
     height: auto;
   }
   
-  .form-container {
+  .contact-form-container {
     flex: 1;
+    padding: 1.5rem;
   }
   
   .form-title {

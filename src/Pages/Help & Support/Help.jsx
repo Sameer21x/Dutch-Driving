@@ -1,23 +1,91 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../Help & Support/Help.css';
 import profilepic from '../../assets/imgs/profilepic.png';
 import contactusimage from '../../assets/imgs/Emails-amico.png';
 import { useNavigate } from 'react-router-dom';
-
+import { BaseUrl } from '../../Constants/Constant';
+import Loader from '../../Components/Loader';
+import Swal from 'sweetalert2';
+import axios from 'axios';
+import { useUser } from '../../UserContext';
 
 export default function Help() {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [memberId, setMemberId] = useState('');
   const [message, setMessage] = useState('');
-
+  const [loading, setLoading] = useState(false);
+  const [profilePic, setProfilePic]=useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
+  const { userId } = useUser();
 
+  useEffect(() => {
+    if (userId) {
+      setIsAuthenticated(true);
+      fetchUserDetails();
+    } else {
+      setIsAuthenticated(false);
+    }
+  }, [userId]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission logic here
-    console.log('Form submitted:', { email, name, message });
+  const fetchUserDetails = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`${BaseUrl}/user/${userId}`);
+      const user = response.data.user;
+      setProfilePic(user.profilePic);
+      setEmail(user.emailAddress);
+      setName(user.username);
+      setMemberId(user.memberId || '');
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+      setLoading(false);
+      Swal.fire('Error', 'Failed to load user details', 'error');
+    }
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!isAuthenticated) {
+      Swal.fire({
+        title: 'Authentication Required',
+        text: 'In order to submit a query, you must first sign up for the Dutch Driving WebApp.',
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonText: 'Sign Up',
+        cancelButtonText: 'Cancel'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate('/signup');
+        }
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await axios.post(`${BaseUrl}/user/contactUs`, {
+        emailAddress: email,
+        name: name,
+        memberId: memberId,
+        message: message
+      });
+
+      setLoading(false);
+      Swal.fire('Success', 'Your query has been submitted successfully.', 'success');
+      setMessage('');
+    } catch (error) {
+      setLoading(false);
+      console.error('Error submitting query:', error);
+      Swal.fire('Error', 'Failed to submit your query. Please try again.', 'error');
+    }
+  };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="help-page">
@@ -25,10 +93,12 @@ export default function Help() {
         <div className="logo" onClick={() => navigate('/')}>Dutch Driving</div>
         <div className="header-right">
           <span>Help & Support</span>
-          {/* <div className="user-profile-help">
-            <img src={profilepic} alt="User" className="user-avatar" />
-            <span>Lisa</span>
-          </div> */}
+          {isAuthenticated && (
+            <div className="user-profile-help">
+              <img src={profilePic} alt="User" className="user-avatar" />
+              <span>{name}</span>
+            </div>
+          )}
         </div>
       </header>
 
@@ -57,7 +127,7 @@ export default function Help() {
                   className="contact-illustration"
                 />
               </div>
-              <div className="form-container">
+              <div className="contact-form-container">
                 <h3 className="form-title">Get in Touch</h3>
                 <p className="form-description">
                   Feel free to reach out to us for any inquiries or support. We're here to assist you with all your questions and concerns.
@@ -71,6 +141,17 @@ export default function Help() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Enter your Email Address"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="memberId">Member ID</label>
+                    <input
+                      type="text"
+                      id="memberId"
+                      value={memberId}
+                      onChange={(e) => setMemberId(e.target.value)}
+                      placeholder="Enter your Member ID"
                       required
                     />
                   </div>
@@ -121,8 +202,6 @@ export default function Help() {
           <div className="copyright">© 2024 Class Technologies Inc.</div>
         </div>
       </footer>
-
-
     </div>
   );
 }
