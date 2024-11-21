@@ -19,6 +19,7 @@ export default function AccountSettings() {
     email: '',
     password: '••••••••',
     planType: '',
+    memberId:'',
     validity: '',
     cost: ''
   });
@@ -47,6 +48,7 @@ export default function AccountSettings() {
       setFormData({
         username: user.username,
         email: user.emailAddress,
+        memberId:user.memberId,
         password: '••••••••',
         planType: user.membershipPlan.planType,
         validity: calculateValidity(user.membershipPlan.startDate, user.membershipPlan.endDate),
@@ -236,6 +238,7 @@ export default function AccountSettings() {
               />
             </div>
           </div>
+         
 
           <div className="form-group">
             <label>Email address</label>
@@ -276,6 +279,18 @@ export default function AccountSettings() {
                 className="edit-icon" 
                 size={20} 
                 onClick={() => toggleEditable('password')}
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>Member ID</label>
+            <div className="input-container">
+              <input
+                type="text"
+                name="memeberid"
+                value={formData.memberId}
+                disabled
               />
             </div>
           </div>
