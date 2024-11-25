@@ -92,8 +92,8 @@ export default function UserProfile() {
                         <h1>Learn Driving Online,<br />Anytime, Anywhere Easily!</h1>
                         <p>Dutch Driving is an interesting platform that will teach you in more an interactive way</p>
                         <div className="cta-buttons">
-                            <button className="btn btn-primary">Contact Us</button>
-                            <button className="btn btn-secondary">
+                            <button className="btnn btn-primary">Contact Us</button>
+                            <button className="btnn btn-secondary">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <circle cx="12" cy="12" r="10"></circle>
                                     <polygon points="10 8 16 12 10 16 10 8"></polygon>
@@ -112,9 +112,20 @@ export default function UserProfile() {
                 </section>
 
                 <section className="action-buttons">
-                    <button className="btn btn-large" onClick={() => handleNavigation("/alllessons")}>Learn Lessons</button>
-                    <button className="btn btn-large" onClick={() => handleNavigation("/quizqna")}>Attempt Quiz</button>
-                    <button className="btn btn-large" onClick={() => handleNavigation("/quizresult")}>Check Results</button>
+                    <div className="action-grid">
+                        <button className="btnn btn-tile" onClick={() => handleNavigation("/alllessons")}>
+                            Learn Lessons
+                        </button>
+                        <button className="btnn btn-tile" onClick={() => handleNavigation("/quizqna")}>
+                            Attempt Quiz
+                        </button>
+                        <button className="btnn btn-tile" onClick={() => handleNavigation("/quizresult")}>
+                            Check Results
+                        </button>
+                        <button className="btnn btn-tile" onClick={() => handleNavigation("/userguide")}>
+                            User Guide
+                        </button>
+                    </div>
                 </section>
             </main>
 

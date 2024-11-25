@@ -1,0 +1,220 @@
+.user-guide {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+  }
+
+
+  .header-userguide {
+    display: flex;
+    height: 70px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    color: white;
+    background-color: #FE7F2D;
+  }
+  
+  .logo {
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: white;
+    cursor: pointer;
+}
+  
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .user-profile-aboutus {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+  }
+  
+  
+  .guide-title {
+    font-size: 2.5rem;
+    color: #ff6636;
+    margin-bottom: 1rem;
+  }
+  
+  .guide-intro, .guide-conclusion {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .guide-section {
+    margin-bottom: 3rem;
+  }
+  
+  .guide-section h2 {
+    font-size: 1.8rem;
+    color: #ff6636;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .guide-section h3 {
+    font-size: 1.4rem;
+    color: #e55a2f;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .guide-section h4 {
+    font-size: 1.2rem;
+    color: #455A64;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .guide-section ul {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .guide-section ul ul {
+    margin-top: 0.5rem;
+  }
+  
+  .guide-section li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .guide-section li svg {
+    vertical-align: middle;
+    margin-right: 0.5rem;
+  }
+  
+  @media (max-width: 768px) {
+    .user-guide {
+      padding: 1rem;
+    }
+  
+    .guide-title {
+      font-size: 2rem;
+    }
+  
+    .guide-section h2 {
+      font-size: 1.6rem;
+    }
+  
+    .guide-section h3 {
+      font-size: 1.3rem;
+    }
+  
+    .guide-section h4 {
+      font-size: 1.1rem;
+    }
+  }
+
+
+  .footer {
+    background-color: #233D4D;
+    color: white;
+    padding: 2rem;
+  }
+  
+  .footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .footer-logo {
+    font-weight: bold;
+  }
+  
+  .newsletter {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .email-input {
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: none;
+  }
+  
+  .subscribe-button {
+    background-color: #ff7a00;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .footer-links {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .footer-link {
+    color: white;
+    text-decoration: none;
+  }
+  
+  .copyright {
+    font-size: 0.8rem;
+  }
+
+  .aboutus-content {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  
+  .main-heading {
+    font-size: 2.5rem;
+    color: #233D4D;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .aboutus-section {
+    margin-bottom: 2rem;
+  }
+  
+  .subheading {
+    font-size: 1.8rem;
+    color: #FE7F2D;
+    margin-bottom: 1rem;
+  }
+  
+  .aboutus-section p {
+    width: 900px;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 1rem;
+  }
+  
+  .aboutus-section ul {
+    list-style-type: disc;
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .aboutus-section li {
+    text-align: left;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 0.5rem;
+  }

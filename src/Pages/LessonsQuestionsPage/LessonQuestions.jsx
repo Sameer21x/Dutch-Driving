@@ -146,7 +146,7 @@ export default function LessonQuestions() {
         return 'correct';
       }
       if (selectedAnswer === index) {
-        return 'incorrect';
+        return 'incorrectt';
       }
     }
     return '';

@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import quizimage from '../../assets/imgs/quizqna.png';
 import './QuizQuestion.css';
 import Loader from '../../Components/Loader';
-import Countdown from 'react-countdown';
 import Swal from 'sweetalert2';
 import { BaseUrl } from '../../Constants/Constant';
 import { useUser } from '../../UserContext';
@@ -15,8 +14,7 @@ export default function QuizQuestion() {
   const [loading, setLoading] = useState(true);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [section, setSection] = useState('A');
-  const [timeLimit, setTimeLimit] = useState(480);
-  const [timeRemaining, setTimeRemaining] = useState(true);
+  const [timeRemaining, setTimeRemaining] = useState(480); // 8 minutes in seconds
   const [isModalActive, setIsModalActive] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [cumulativeScore, setCumulativeScore] = useState({ correct: 0, total: 0, totalTime: 0 });
@@ -24,9 +22,13 @@ export default function QuizQuestion() {
 
   const { userId } = useUser();
   const navigate = useNavigate();
+  const timerRef = useRef(null);
 
   useEffect(() => {
     fetchQuizData();
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
   }, [section]);
 
   useEffect(() => {
@@ -35,23 +37,17 @@ export default function QuizQuestion() {
     }
   }, [currentQuestionIndex, quizData]);
 
-  useEffect(() => {
-    console.log('Current selectedAnswers:', selectedAnswers);
-  }, [selectedAnswers]);
-
   const fetchQuizData = async () => {
     setLoading(true);
     try {
       const response = await axios.get(`${BaseUrl}/quiz/${section}/questions`);
-      console.log('Quiz Data:', response.data.quiz);
       setQuizData(response.data.quiz);
       setCurrentQuestionIndex(0);
       setSelectedAnswers({});
-      setTimeRemaining(true);
+      setTimeRemaining(section === 'C' ? 1440 : 480); // 24 minutes for section C, 8 minutes for others
       setIsModalActive(false);
       setStartTime(Date.now());
-
-      setTimeLimit(section === 'C' ? 1440 : 480);
+      startTimer();
       setLoading(false);
     } catch (error) {
       console.error("Error fetching quiz data:", error);
@@ -59,28 +55,32 @@ export default function QuizQuestion() {
     }
   };
 
+  const startTimer = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setTimeRemaining(prev => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current);
+          showSubmitModal();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
   const handleAnswerSelect = (index) => {
     const currentQuestion = quizData.questions[currentQuestionIndex];
     const selectedOption = currentQuestion.answerOptions[index];
     
-    setSelectedAnswers(prev => {
-      const updatedAnswers = {
-        ...prev,
-        [currentQuestion._id]: {
-          _id: currentQuestion._id,
-          selectedOption: selectedOption.optionText,
-          isCorrect: selectedOption.isCorrect
-        }
-      };
-      console.log('Updated selectedAnswers:', updatedAnswers);
-      return updatedAnswers;
-    });
-    
-    console.log('Selected Answer:', {
-      questionId: currentQuestion._id,
-      selectedOption: selectedOption.optionText,
-      isCorrect: selectedOption.isCorrect
-    });
+    setSelectedAnswers(prev => ({
+      ...prev,
+      [currentQuestion._id]: {
+        _id: currentQuestion._id,
+        selectedOption: selectedOption.optionText,
+        isCorrect: selectedOption.isCorrect
+      }
+    }));
   };
 
   const handleNextQuestion = () => {
@@ -103,40 +103,24 @@ export default function QuizQuestion() {
 
     try {
       const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-  
       const formattedAnswers = Object.values(selectedAnswers).map(({ _id, selectedOption }) => ({
         _id,
         selectedOption
       }));
-  
-      console.log('All selectedAnswers before formatting:', selectedAnswers);
-      console.log('Formatted answers:', formattedAnswers);
-  
-      console.log('Submitting answers:', {
-        userId,
-        section,
-        answers: formattedAnswers,
-        totalTime: elapsedTime
-      });
-  
+
       const response = await axios.post(`${BaseUrl}/quiz/submit`, {
         userId,
         section,
         answers: formattedAnswers,
         totalTime: elapsedTime
       });
-  
-      console.log('Submit response:', response.data);
-  
-      const correctCount = Object.values(selectedAnswers).filter(answer => answer.isCorrect).length;
-      console.log('Locally calculated correct answers:', correctCount);
-  
+
       setCumulativeScore(prevScore => ({
         correct: prevScore.correct + response.data.result.correctAnswers,
         total: prevScore.total + response.data.result.totalQuestions,
         totalTime: prevScore.totalTime + elapsedTime
       }));
-  
+
       if (section === 'C') {
         showFinalModal();
       } else {
@@ -158,11 +142,36 @@ export default function QuizQuestion() {
     setIsModalActive(true);
     Swal.fire({
       title: `You have completed Section ${section}`,
-      text: `Click "Submit and Continue" to move on to the next section or "Go Back" to review your answers.`,
+      text: `You have answered ${Object.keys(selectedAnswers).length} out of ${quizData.questions.length} questions. Click "Submit and Continue" to move on to the next section or "Go Back" to review your answers.`,
       icon: 'info',
       showCancelButton: true,
       confirmButtonText: 'Submit and Continue',
-      cancelButtonText: 'Go Back'
+      cancelButtonText: 'Go Back',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      allowEnterKey: false,
+      showClass: {
+        popup: 'animate__animated animate__fadeIn'
+      },
+      hideClass: {
+        popup: 'animate__animated animate__fadeOut'
+      },
+      customClass: {
+        popup: 'custom-modal-popup'
+      },
+      backdrop: `
+        rgba(0,0,123,0.4)
+        url("/images/nyan-cat.gif")
+        left top
+        no-repeat
+      `,
+      animation: true,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (modal) => {
+        modal.addEventListener('mouseenter', Swal.stopTimer)
+        modal.addEventListener('mouseleave', Swal.resumeTimer)
+      }
     }).then((result) => {
       setIsModalActive(false);
       if (result.isConfirmed) {
@@ -189,7 +198,32 @@ export default function QuizQuestion() {
       `,
       confirmButtonText: 'Go Home',
       cancelButtonText: 'Attempt Again',
-      showCancelButton: true
+      showCancelButton: true,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      allowEnterKey: false,
+      showClass: {
+        popup: 'animate__animated animate__fadeIn'
+      },
+      hideClass: {
+        popup: 'animate__animated animate__fadeOut'
+      },
+      customClass: {
+        popup: 'custom-modal-popup'
+      },
+      backdrop: `
+        rgba(0,0,123,0.4)
+        url("/images/nyan-cat.gif")
+        left top
+        no-repeat
+      `,
+      animation: true,
+      timer: 5000,
+      timerProgressBar: true,
+      didOpen: (modal) => {
+        modal.addEventListener('mouseenter', Swal.stopTimer)
+        modal.addEventListener('mouseleave', Swal.resumeTimer)
+      }
     }).then((result) => {
       if (result.isConfirmed) {
         navigate('/userprofile');
@@ -199,16 +233,6 @@ export default function QuizQuestion() {
         fetchQuizData();
       }
     });
-  };
-
-  const countdownRenderer = ({ minutes, seconds, completed }) => {
-    if (completed) {
-      setTimeRemaining(false);
-      showSubmitModal();
-      return null;
-    } else {
-      return <span>{minutes}:{seconds < 10 ? `0${seconds}` : seconds}</span>;
-    }
   };
 
   if (loading) {
@@ -230,7 +254,7 @@ export default function QuizQuestion() {
       </div>
 
       <div className="timer">
-        {isModalActive ? null : <Countdown date={Date.now() + timeLimit * 1000} renderer={countdownRenderer} />}
+        {!isModalActive && `${Math.floor(timeRemaining / 60)}:${(timeRemaining % 60).toString().padStart(2, '0')}`}
       </div>
 
       <div className="question-container">
@@ -252,7 +276,7 @@ export default function QuizQuestion() {
             key={option._id}
             className={`answer-option ${selectedAnswers[currentQuestion._id]?.selectedOption === option.optionText ? 'selected' : ''}`}
             onClick={() => handleAnswerSelect(index)}
-            disabled={!timeRemaining}
+            disabled={timeRemaining === 0}
           >
             {option.optionText}
           </button>
@@ -260,10 +284,10 @@ export default function QuizQuestion() {
       </div>
 
       <div className="navigation-buttons">
-        <button className="nav-button go-back" onClick={handlePreviousQuestion} disabled={currentQuestionIndex === 0 || !timeRemaining}>
+        <button className="nav-button go-back" onClick={handlePreviousQuestion} disabled={currentQuestionIndex === 0 || timeRemaining === 0}>
           Go Back
         </button>
-        <button className="nav-button next" onClick={handleNextQuestion} disabled={!timeRemaining}>
+        <button className="nav-button next" onClick={handleNextQuestion} disabled={timeRemaining === 0}>
           {currentQuestionIndex === questions.length - 1 ? 'Submit' : 'Next'}
         </button>
       </div>

@@ -15,6 +15,7 @@ import AccountSettings from './Pages/Accountsettings/Accountsetting';
 import Aboutus from './Pages/AboutUs/About';
 import Help from './Pages/Help & Support/Help';
 import Payment from './Pages/Payment Failed/Payment';
+import UserGuide from './Pages/User Guide/UserGuide';
 import './App.css';  // Import your CSS file
 import { UserProvider } from './UserContext';
 
@@ -38,6 +39,7 @@ function App() {
           <Route path='/accsettings' element={<AccountSettings />} />
           <Route path='/aboutus' element={<Aboutus />} />
           <Route path='/help' element={<Help />} />
+          <Route path='/userguide' element={<UserGuide />} />
           <Route path='/paymentfailed' element={<Payment />} />
 
 
